@@ -79,10 +79,6 @@
             
         }
     }
-    protected override async Task OnAfterRenderAsync(bool first)
-    {
-        base.OnAfterRenderAsync(first);
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,10 +86,6 @@
         p2name = Player2;
         try
         {
-            //var ctx = await DynamoDBInitializer.InitializeDynamoDB();
-
-            //await ctx.PutItemAsync(new Thing{ Key = "a", Sk = "b"});
-
             //Call the plain JS function to bind callbacks to this component
             //Window callbacks need to register their own events
             await JsRuntime.InvokeAsync<object>("setInstance", DotNetObjectReference.Create(this));
@@ -125,6 +117,5 @@
             default: break;
         }
         await InvokeAsync(() => { StateHasChanged(); });
-        //HumanInterfaceParser.KeyDown((byte) key);
     }
 }
