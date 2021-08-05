@@ -1,0 +1,14 @@
+
+@using Petscribe.Services.Game
+
+@if(Player != null)
+{
+<div class="ship" style="@Player.ShipStyle">
+    <span class="oi oi-location" aria-hidden="true"></span>
+</div>
+}
+
+@code {
+    [Parameter]
+    public Ship Player { get; set; }
+}
