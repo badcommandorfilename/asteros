@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using System.Security.Principal;
 using System.Runtime.InteropServices.ComTypes;
 using System.Collections.Specialized;
 using System.Runtime.Serialization;
@@ -34,6 +36,12 @@ namespace Petscribe.Services.Game
             var t = self.Get<T>();
             return t;
         }
+    }
+
+    public class Lifetime
+    {
+        public DateTime Birth {get; set; }
+        public DateTime Death {get; set; }
     }
 
     public class Pos2d
@@ -187,6 +195,14 @@ namespace Petscribe.Services.Game
         {
             foreach (var o in world.Objects.Values)
             {
+                if(o is IHas<Lifetime> l)
+                {
+                    if(l.Value.Death <= DateTime.UtcNow)
+                    {
+                        world.Remove(o.Key);
+                        continue;
+                    }
+                }
                 if (o is IMomentum m)
                 {
                     var dx = (ms / 1000.0) * m.Velocity.DDX / m.Mass.Kg;

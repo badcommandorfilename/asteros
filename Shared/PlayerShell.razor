@@ -1,0 +1,18 @@
+
+@using Petscribe.Services.Game
+
+@if(Self != null)
+{
+<div class="shell" style="@Style">
+    <span class="oi oi-target" aria-hidden="true"></span>
+</div>
+}
+
+@code {
+    [Parameter]
+    public Shell Self { get; set; }
+
+    public string Style =>
+        $"left: {Self.Pos.X}px; top: {Self.Pos.Y}px; transform: rotate({Self.Rot.W + Self.Wo}rad);";
+
+}

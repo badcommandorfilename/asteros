@@ -19,6 +19,10 @@
 <div class="arena">
     <PlayerShip Player=Opponent></PlayerShip>
     <PlayerShip Player=Player></PlayerShip>
+    @foreach (var shell in GetShells())
+    {
+        <PlayerShell Self=shell></PlayerShell>
+    }
 </div>
 
 <br>
@@ -40,6 +44,17 @@
     public Ship Player => Game.World.Get(p1name) as Ship;
 
     public Ship Opponent => Game.World.Get(p2name) as Ship;
+
+    public IEnumerable<Shell> GetShells()
+    {
+        foreach(var o in Game.World.Objects.Values)
+        {
+            if(o is Shell s)
+            {
+                yield return s;
+            }
+        }
+    }
 
     bool syncStarted;
 
@@ -73,10 +88,7 @@
                     p2name = Player2;
                     p1name = Player1;
                 }
-
             }
-
-            
         }
     }
 
@@ -114,6 +126,7 @@
             case 87: Player.Forward(); break; //W
             case 65: Player.Left(); break; //A
             case 68: Player.Right(); break; //D
+            case 83: Player.Shoot(Game.World); break; //S
             default: break;
         }
         await InvokeAsync(() => { StateHasChanged(); });

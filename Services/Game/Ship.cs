@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Reflection.Emit;
 using System.Dynamic;
 using System.Security.Cryptography.X509Certificates;
@@ -18,28 +19,45 @@ namespace Petscribe.Services.Game
             this.As<Mass>().Kg = 10;
         }
 
-        public IDictionary<string, object> P {get;} = new Dictionary<string, object>();
+        public IDictionary<string, object> P { get; } = new Dictionary<string, object>();
 
-        public double Wo {get; init;}
+        public double Wo { get; init; }
 
         public Pos2d Pos => this.As<Pos2d>();
         public Rot2d Rot => this.As<Rot2d>();
-        public double Speed {get;set;} = 50;
-        public double Turn {get;set;} = 0.5/M.tpi;
+        public double Speed { get; set; } = 50;
+        public double Turn { get; set; } = 0.5 / M.tpi;
 
-        public void Left() => Rot.W-=Turn;
-        public void Right() => Rot.W+=Turn;
+        public void Left() => Rot.W -= Turn;
+        public void Right() => Rot.W += Turn;
         public void Forward()
         {
             var dx = (double)Math.Cos(Rot.W);
             var dy = (double)Math.Sin(Rot.W);
-            if(this is IHas<Velocity2d> v2)
+            if (this is IHas<Velocity2d> v2)
             {
-                v2.Value.DDX += dx*Speed;
-                v2.Value.DDY += dy*Speed;
+                v2.Value.DDX += dx * Speed;
+                v2.Value.DDY += dy * Speed;
             }
         }
-            
+
+        int shotid = 0;
+        public void Shoot(WorldState world)
+        {
+            var s = new Shell($"{this.Key}_shell-{shotid++}");
+            s.Pos.X = this.Pos.X;
+            s.Pos.Y = this.Pos.Y;
+            if (this is IHas<Velocity2d> v2)
+            {
+                if (s is IHas<Velocity2d> v1)
+                {
+                    v1.Value.DDX += v2.Value.DDX;
+                    v1.Value.DDY += v2.Value.DDY;
+                }
+            }
+            world.Add(s);
+        }
+
         public string ShipStyle =>
         $"left: {Pos.X}px; top: {Pos.Y}px; transform: rotate({Rot.W + Wo}rad);";
 
@@ -52,6 +70,6 @@ namespace Petscribe.Services.Game
         {
             Wo = M.hpi - 0.72;
         }
-        
+
     }
 }
