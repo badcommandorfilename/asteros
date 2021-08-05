@@ -1,0 +1,130 @@
+@page "/spacewar"
+
+@using Petscribe.Services.Game
+
+@inject IJSRuntime JsRuntime
+
+<div>
+    Your Name:
+    <input @bind=Player1>
+</div>
+<div>
+    Opponent's Name:
+    <input @bind=Player2>
+</div>
+<div>
+    <a class="button" @onclick=OnJoin>Join!</a>
+</div>
+
+<div class="arena">
+    <PlayerShip Player=Opponent></PlayerShip>
+    <PlayerShip Player=Player></PlayerShip>
+</div>
+
+<br>
+@Player?.ShipStyle
+@Opponent?.ShipStyle
+
+@code {
+
+    private string p1name = ""; //GameState
+    private string p2name = "";
+
+    public string Player1 {get; set;} = "ship-2"; //UI State
+    public string Player2 {get; set;} = "ship-1";
+
+    public GameClient Client = new GameClient();
+
+    public GameLoop Game => Client.Game;
+
+    public Ship Player => Game.World.Get(p1name) as Ship;
+
+    public Ship Opponent => Game.World.Get(p2name) as Ship;
+
+    bool syncStarted;
+
+    public void OnJoin()
+    {
+        if (!string.IsNullOrWhiteSpace(Player1))
+        {
+            if (!string.IsNullOrWhiteSpace(Player2))
+            {
+                //Check if the names have changed
+                if (!syncStarted
+                || Player1 != p1name
+                || Player2 != p2name)
+                {
+                    //Game.World.Remove(p1name);
+                    Game.World.Add(new TriShip(Player1));
+                    
+                    //Client.OutKeys.Remove(p1name);
+                    Client.OutKeys.Add(Player1);
+                    Console.WriteLine(Player1);
+
+                    //Client.InKeys.Remove(p2name);
+                    Client.InKeys.Add(Player2);
+                    Console.WriteLine(Player2);
+                    if (!syncStarted)
+                    {
+                        syncStarted = true;
+                        Task.Run(() => Client.Sync(1000));
+                    }
+                    
+                    p2name = Player2;
+                    p1name = Player1;
+                }
+
+            }
+
+            
+        }
+    }
+    protected override async Task OnAfterRenderAsync(bool first)
+    {
+        base.OnAfterRenderAsync(first);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        p1name = Player1;
+        p2name = Player2;
+        try
+        {
+            //var ctx = await DynamoDBInitializer.InitializeDynamoDB();
+
+            //await ctx.PutItemAsync(new Thing{ Key = "a", Sk = "b"});
+
+            //Call the plain JS function to bind callbacks to this component
+            //Window callbacks need to register their own events
+            await JsRuntime.InvokeAsync<object>("setInstance", DotNetObjectReference.Create(this));
+
+            Game.OnStep += () =>
+            {
+                this.StateHasChanged();
+            };
+
+            Task.Run(() => Game.Run());
+        }
+        catch (System.Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw;
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+    [JSInvokable("KeyDown")]
+    public async Task KeyDown(int key)
+    {
+        switch (key)
+        {
+            case 87: Player.Forward(); break; //W
+            case 65: Player.Left(); break; //A
+            case 68: Player.Right(); break; //D
+            default: break;
+        }
+        await InvokeAsync(() => { StateHasChanged(); });
+        //HumanInterfaceParser.KeyDown((byte) key);
+    }
+}
