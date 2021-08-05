@@ -39,7 +39,6 @@ namespace Petscribe.Services.Game
                 v2.Value.DDY += dy*Speed;
             }
         }
-
             
         public string ShipStyle =>
         $"left: {Pos.X}px; top: {Pos.Y}px; transform: rotate({Rot.W + Wo}rad);";

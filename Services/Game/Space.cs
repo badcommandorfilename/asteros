@@ -17,8 +17,8 @@ namespace Petscribe.Services.Game
     {
         public Space(string key) : base(key)
         {
-            this.As<Square2d>().W = 300;
-            this.As<Square2d>().H = 300;
+            this.As<Square2d>().W = 600;
+            this.As<Square2d>().H = 600;
         }
 
         public IDictionary<string, object> P {get;} = new Dictionary<string, object>();
