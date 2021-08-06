@@ -1,11 +1,3 @@
-
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-using System.Xml.XPath;
-using System.Reflection.Emit;
-using System.Reflection;
-using System.Xml.Linq;
 using System.Runtime.Serialization;
 using System.Reflection.Metadata;
 using System.Net.Http;
@@ -29,9 +21,13 @@ namespace Petscribe.Services.Game
 {
     public class WXY
     {
+        public string Key { get; init; }
         public double W;
         public double X;
         public double Y;
+        public DateTime Birth;
+
+        public DateTime Death;
     }
 
     public class GameClient
@@ -57,11 +53,22 @@ namespace Petscribe.Services.Game
             var X = item.Value.X;
             var Y = item.Value.Y;
             var W = 0.0;
+            var Birth = DateTime.MinValue;
+            var Death = DateTime.MaxValue;
             if (item is IHas<Rot2d> r)
             {
                 W = r.Value.W;
             }
-            return new WXY { X = X, Y = Y, W = W };
+            if (item is IHas<Lifetime> t)
+            {
+                Birth = t.Value.Birth;
+                Death = t.Value.Death;
+            }
+
+            return new WXY { 
+                Key = (item as GameObject).Key,
+                X = X, Y = Y, W = W, 
+                Birth = Birth, Death = Death };
         }
 
         public static GameObject ReadAsWXY(GameObject s, WXY x)
@@ -75,6 +82,10 @@ namespace Petscribe.Services.Game
             {
                 r.Value.W = x.W;
             }
+            if(s is IHas<Lifetime> t)
+            {
+                t.Value.Death = x.Death;
+            }
             return s;
         }
 
@@ -85,11 +96,44 @@ namespace Petscribe.Services.Game
             .Child("ships")
             .Child($"{player.Key}")
             .PutAsync(StoreAs2d(player));
+
+            var shots = player.Shells
+            .Where(s => !s.IsDead)
+            .Select(s => StoreAs2d(s))
+            .ToDictionary(o => o.Key, o => o);
+
+            await Client
+            .Child("ships")
+            .Child($"{player.Key}")
+            .Child("shells")
+            .PutAsync(shots);
+        }
+
+        public async Task GetShellsUpdate(string key)
+        {
+            var shells = await Client
+            .Child("ships")
+            .Child($"{key}")
+            .Child("shells")
+            .OnceAsync<WXY>();
+
+            Console.WriteLine(shells.Count);
+
+            if(shells != null)
+            {
+                foreach (var o in shells)
+                {
+                    WXY w = o.Object;
+                    Console.WriteLine(w.Key);
+                    Game.World.Objects.TryGetValue(w.Key, out GameObject s);
+                    s = s ?? Game.World.Add(new Shell(w.Key));
+                    ReadAsWXY(s,w);
+                }
+            }
         }
 
         public async Task GetShipUpdate(string key)
         {
-            //Console.WriteLine(key);
             var o = await Client
             .Child("ships")
             .Child($"{key}")
@@ -98,17 +142,12 @@ namespace Petscribe.Services.Game
             WXY x = o;
             if(x != null)
             {
-                Console.WriteLine(x);
-                GameObject s;
-                if(Game.World.Objects.TryGetValue(key, out s))
-                {
-                    
-                }
-                else
-                {
-                   s = Game.World.Add(new TriShip(key));
-                }
+                //Console.WriteLine(x);
+                Game.World.Objects.TryGetValue(key, out GameObject s);
+                s = s ?? Game.World.Add(new TriShip(key));
                 ReadAsWXY(s,x);
+
+                GetShellsUpdate(key);
             }
 
         }
@@ -148,6 +187,10 @@ namespace Petscribe.Services.Game
                 if (o is TriShip s)
                 {
                     await PushShipUpdate(s);
+                }
+                if (o is Shell a)
+                {
+
                 }
             }
 

@@ -21,7 +21,7 @@ namespace Petscribe.Services.Game
         {
             this.As<Mass>().Kg = 1;
             this.As<Lifetime>().Birth = DateTime.UtcNow;
-            this.As<Lifetime>().Death = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+            this.As<Lifetime>().Death = DateTime.UtcNow + TimeSpan.FromSeconds(200);
         }
 
         public IDictionary<string, object> P {get;} = new Dictionary<string, object>();
@@ -31,6 +31,8 @@ namespace Petscribe.Services.Game
         public Pos2d Pos => this.As<Pos2d>();
         public Rot2d Rot => this.As<Rot2d>();
         public double Speed {get;set;} = 50;
+
+        public bool IsDead => this.As<Lifetime>().Death <= DateTime.UtcNow;
 
         public void Forward()
         {

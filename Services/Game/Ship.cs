@@ -1,3 +1,4 @@
+using System.Xml.Schema;
 using System.Runtime.Intrinsics;
 using System.ComponentModel;
 using System.Reflection.Emit;
@@ -42,9 +43,10 @@ namespace Petscribe.Services.Game
             }
         }
 
-        int shotid = 0;
+        public List<Shell> Shells = new List<Shell>();
         public void Shoot(WorldState world)
         {
+            var shotid = Shells.Count;
             var s = new Shell($"{this.Key}_shell-{shotid++}");
             s.Pos.X = this.Pos.X;
             s.Pos.Y = this.Pos.Y;
@@ -60,6 +62,7 @@ namespace Petscribe.Services.Game
                     v1.Value.DDY += v2.Value.DDY/10;
                 }
             }
+            Shells.Add(s);
             world.Add(s);
         }
 
