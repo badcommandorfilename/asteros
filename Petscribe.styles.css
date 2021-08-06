@@ -16,6 +16,20 @@
     padding: 80px 0 0;
 }
 /* /Shared/NavMenu.razor.rz.scp.css */
+/* /Shared/PlayerShell.razor.rz.scp.css */
+.shell[b-qbj60w8jhx]
+{
+    width: 4px;
+    height: 4px;
+    position: absolute;
+    color: antiquewhite;
+}
+
+.shell *[b-qbj60w8jhx]
+{
+    max-width: 4px !important;
+    max-height: 4px !important;
+}
 /* /Shared/PlayerShip.razor.rz.scp.css */
 .ship[b-4z14ukkxyp]
 {
