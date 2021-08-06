@@ -1,3 +1,4 @@
+using System.Runtime.Intrinsics;
 using System.ComponentModel;
 using System.Reflection.Emit;
 using System.Dynamic;
@@ -51,8 +52,12 @@ namespace Petscribe.Services.Game
             {
                 if (s is IHas<Velocity2d> v1)
                 {
-                    v1.Value.DDX += v2.Value.DDX;
-                    v1.Value.DDY += v2.Value.DDY;
+                    var dx = (double)Math.Cos(Rot.W);
+                    var dy = (double)Math.Sin(Rot.W);
+                    v1.Value.DDX += dx * 30;
+                    v1.Value.DDY += dy * 30;
+                    v1.Value.DDX += v2.Value.DDX/10; //Momentum formula is wrong
+                    v1.Value.DDY += v2.Value.DDY/10;
                 }
             }
             world.Add(s);

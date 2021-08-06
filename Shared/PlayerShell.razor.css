@@ -5,3 +5,9 @@
     position: absolute;
     color: antiquewhite;
 }
+
+.shell *
+{
+    max-width: 4px !important;
+    max-height: 4px !important;
+}
