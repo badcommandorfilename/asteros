@@ -21,7 +21,7 @@ namespace Petscribe.Services.Game
         {
             this.As<Mass>().Kg = 1;
             this.As<Lifetime>().Birth = DateTime.UtcNow;
-            this.As<Lifetime>().Death = DateTime.UtcNow + TimeSpan.FromSeconds(200);
+            this.As<Lifetime>().Death = DateTime.UtcNow + TimeSpan.FromSeconds(6);
         }
 
         public IDictionary<string, object> P {get;} = new Dictionary<string, object>();

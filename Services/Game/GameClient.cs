@@ -1,3 +1,6 @@
+using System.Xml.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Intrinsics;
 using System.Runtime.Serialization;
 using System.Reflection.Metadata;
 using System.Net.Http;
@@ -25,6 +28,9 @@ namespace Petscribe.Services.Game
         public double W;
         public double X;
         public double Y;
+
+        public double DX;
+        public double DY;
         public DateTime Birth;
 
         public DateTime Death;
@@ -53,11 +59,18 @@ namespace Petscribe.Services.Game
             var X = item.Value.X;
             var Y = item.Value.Y;
             var W = 0.0;
+            var DX = 0.0;
+            var DY = 0.0;
             var Birth = DateTime.MinValue;
             var Death = DateTime.MaxValue;
             if (item is IHas<Rot2d> r)
             {
                 W = r.Value.W;
+            }
+            if (item is IHas<Velocity2d> v)
+            {
+                DX = v.Value.DDX;
+                DY = v.Value.DDY;
             }
             if (item is IHas<Lifetime> t)
             {
@@ -68,6 +81,7 @@ namespace Petscribe.Services.Game
             return new WXY { 
                 Key = (item as GameObject).Key,
                 X = X, Y = Y, W = W, 
+                DX = DX, DY = DY,
                 Birth = Birth, Death = Death };
         }
 
@@ -81,6 +95,11 @@ namespace Petscribe.Services.Game
             if(s is IHas<Rot2d> r)
             {
                 r.Value.W = x.W;
+            }
+            if (s is IHas<Velocity2d> v)
+            {
+                v.Value.DDX = x.DX;
+                v.Value.DDY = x.DY;
             }
             if(s is IHas<Lifetime> t)
             {
@@ -125,9 +144,16 @@ namespace Petscribe.Services.Game
                 {
                     WXY w = o.Object;
                     Console.WriteLine(w.Key);
-                    Game.World.Objects.TryGetValue(w.Key, out GameObject s);
+                    bool n = false;
+                    if(Game.World.Objects.TryGetValue(w.Key, out GameObject s))
+                    {
+                        n = true;
+                    }
                     s = s ?? Game.World.Add(new Shell(w.Key));
-                    ReadAsWXY(s,w);
+                    if(!n)
+                    {
+                        ReadAsWXY(s,w);
+                    }
                 }
             }
         }
