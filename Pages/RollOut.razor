@@ -1,0 +1,63 @@
+﻿
+<MudButtonGroup Color="Color.Primary" Variant="Variant.Filled">
+        @for (var i = 1; i <= N; i++)
+        {
+            var a = i;
+            <MudButton @onclick="() => Calc(doRoll(a).ToList(),D)">@a</MudButton>
+        }
+</MudButtonGroup>
+
+    (@D) @Result
+
+@code
+{
+    [Parameter]
+    public int N { get; set; }
+    [Parameter]
+    public int Major { get; set; }
+    [Parameter]
+    public int Minor { get; set; }
+    [Parameter]
+    public int Miss { get; set; }
+
+    [Parameter]
+    public int D { get; set; }
+    Random r = new();
+
+    public IEnumerable<int>
+    doRoll(int n)
+    {
+        for (var i = 0; i < n; i++)
+        {
+            var o = r.Next(11);
+            Console.WriteLine(o);
+            yield return o;
+        }
+    }
+
+    public int Result { get; set; }
+
+    public void Sum(IEnumerable<int> rolls)
+    {
+        Result = rolls.Sum();
+    }
+
+
+    public void Calc(List<int> rolls, int difficulty)
+    {
+        var result = 0;
+
+        var non_misses = rolls.Distinct();
+        var majors = non_misses.Where(x => x > difficulty);
+        var minors = non_misses.Where(x => x <= difficulty);
+
+        result += Major * majors.Count();
+        Console.WriteLine($"Major = {Major} * {majors.Count()}");
+        result += Minor * minors.Count();
+        Console.WriteLine($"Minor = {Minor} * {minors.Count()}");
+
+        result -= Miss * (rolls.Count() - non_misses.Count());
+
+        Result = result;
+    }
+}

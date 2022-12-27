@@ -1,0 +1,19 @@
+﻿@page "/flashback"
+
+<PageTitle>Flashback</PageTitle>
+
+<h1>Flashback</h1>
+
+<div class="center">
+    <MudSlider @bind-value="currentCount" Min="1" Max="12" Step="1" Color="Color.Error">Difficulty: @currentCount</MudSlider>
+
+
+    
+    <MMX Difficulty="currentCount"/>
+</div>
+<span>
+</span>
+
+@code {
+    public int currentCount { get; set; } = 5;
+}

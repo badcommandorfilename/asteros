@@ -1,0 +1,32 @@
+﻿<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
+        <MudNumericField @bind-Value="Level" Label="Skill Level" Variant="Variant.Outlined"  Size="Size.Small"/>
+
+        <MudNumericField @bind-Value="MajorMod" Label="Major Modifier" Variant="Variant.Outlined"  Size="Size.Small"/>
+
+        <MudNumericField @bind-Value="MinorMod" Label="Minor Modifier" Variant="Variant.Outlined"  Size="Size.Small"/>
+    
+        <MudNumericField @bind-Value="MissMod" Label="Miss Modifier" Variant="Variant.Outlined"  Size="Size.Small"/>
+</MudPaper>
+<span>
+    <span>@Major</span>
+    <span>@Minor</span>
+    <span>@Miss</span>
+</span>
+<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
+    <RollOut N=5 Major=Major Minor=Minor Miss=Miss D=Difficulty/>
+</MudPaper>
+@code {
+    [Parameter]
+    public int Difficulty { get; set; }
+
+    public int Level { get; set; } = 0;
+
+    public int MajorMod { get; set; }
+    public int MinorMod { get; set; }
+    public int MissMod { get; set; }
+
+    public int Major => Math.Max(1, Level * 2) + MajorMod;
+    public int Minor => MinorMod;
+    public int Miss => -1 * Math.Max(1, Level) + MissMod;
+
+}
