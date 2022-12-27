@@ -5,15 +5,22 @@
 <h1>Flashback</h1>
 
 <div class="center">
-    <MudSlider @bind-value="currentCount" Min="1" Max="12" Step="1" Color="Color.Error">Difficulty: @currentCount</MudSlider>
+    <MudPaper Class="d-flex flex-row flex-grow-1 gap-4 justify-space-between " Elevation="0">
+        <MudSlider Style="max-width: 300px" @bind-value="Difficulty" Min="1" Max="12" Step="1" Color="Color.Error">Difficulty: @Difficulty</MudSlider>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" OnClick="() => NSkills++"></MudIconButton>
 
-
+    </MudPaper> 
     
-    <MMX Difficulty="currentCount"/>
+    @for (int i = 0; i < NSkills; i++)
+    {
+        <MMX Difficulty="Difficulty" />
+    }
 </div>
 <span>
 </span>
 
 @code {
-    public int currentCount { get; set; } = 5;
+    public int Difficulty { get; set; } = 5;
+
+    public int NSkills { get; set; } = 1;
 }

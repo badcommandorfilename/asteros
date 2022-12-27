@@ -1,19 +1,18 @@
-﻿<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
-        <MudNumericField @bind-Value="Level" Label="Skill Level" Variant="Variant.Outlined"  Size="Size.Small"/>
+﻿<MudPaper Class="d-flex flex-row flex-grow-1 gap-4 justify-space-between flex-wrap flex-sm-wrap" Elevation="0">
+    <div Class="d-flex flex-row flex-grow-1 gap-4 justify-space-between">
+        <MudNumericField @bind-Value="Level" Label="Skill Level"Variant="Variant.Outlined" Size="Size.Large" />
 
-        <MudNumericField @bind-Value="MajorMod" Label="Major Modifier" Variant="Variant.Outlined"  Size="Size.Small"/>
+        <MudNumericField @bind-Value="MajorMod" Label="Major Modifier" Adornment="Adornment.End" AdornmentText="@($"({Major})")" Variant="Variant.Outlined" Size="Size.Large" />
 
-        <MudNumericField @bind-Value="MinorMod" Label="Minor Modifier" Variant="Variant.Outlined"  Size="Size.Small"/>
-    
-        <MudNumericField @bind-Value="MissMod" Label="Miss Modifier" Variant="Variant.Outlined"  Size="Size.Small"/>
-</MudPaper>
-<span>
-    <span>@Major</span>
-    <span>@Minor</span>
-    <span>@Miss</span>
-</span>
-<MudPaper Class="d-flex flex-row flex-grow-1 gap-4" Elevation="0">
-    <RollOut N=5 Major=Major Minor=Minor Miss=Miss D=Difficulty/>
+        <MudNumericField @bind-Value="MinorMod" Label="Minor Modifier" Adornment="Adornment.End" AdornmentText="@($"({Minor})")" Variant="Variant.Outlined" Size="Size.Large" />
+
+        <MudNumericField @bind-Value="MissMod" Label="Miss Modifier" Adornment="Adornment.End" AdornmentText="@($"({Miss})")" Variant="Variant.Outlined" Size="Size.Large" />
+
+    </div>
+    <div Class="d-flex flex-row flex-grow-1 gap-4 justify-space-between">
+        <RollOut N=5 Major=Major Minor=Minor Miss=Miss D=Difficulty />
+    </div>
+
 </MudPaper>
 @code {
     [Parameter]
