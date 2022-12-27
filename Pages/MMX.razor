@@ -1,6 +1,6 @@
 ﻿<MudPaper Class="d-flex flex-row flex-grow-1 gap-4 justify-space-between flex-wrap flex-sm-wrap" Elevation="0">
     <div Class="d-flex flex-row flex-grow-1 gap-4 justify-space-between">
-        <MudNumericField @bind-Value="Level" Label="Skill Level"Variant="Variant.Outlined" Size="Size.Large" />
+        <MudNumericField @bind-Value="Level" Label="Skill Level" Variant="Variant.Outlined" Size="Size.Large" />
 
         <MudNumericField @bind-Value="MajorMod" Label="Major Modifier" Adornment="Adornment.End" AdornmentText="@($"({Major})")" Variant="Variant.Outlined" Size="Size.Large" />
 
@@ -10,6 +10,8 @@
 
     </div>
     <div Class="d-flex flex-row flex-grow-1 gap-4 justify-space-between">
+        <MudButton Style="min-width:33.3%" contenteditable="true" Variant="Variant.Outlined" >Skill Name</MudButton>
+
         <RollOut N=5 Major=Major Minor=Minor Miss=Miss D=Difficulty />
     </div>
 

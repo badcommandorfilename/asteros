@@ -4,7 +4,7 @@
         @for (var i = 1; i <= N; i++)
         {
             var a = i;
-            <MudButton @onclick="() => Rolls = doRoll(a).ToList()">@a</MudButton>
+            <MudButton @onclick="() => Rolls = doRoll(a).ToList()" Size="Size.Large">@a</MudButton>
         }
     </MudButtonGroup>
 </MudPaper>
